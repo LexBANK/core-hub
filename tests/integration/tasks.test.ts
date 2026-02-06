@@ -101,6 +101,26 @@ describe("Task API Integration Tests", () => {
 			expect(body.success).toBe(false);
 			expect(body.errors).toBeInstanceOf(Array);
 		});
+
+		it("should return a 400 error for blank string fields", async () => {
+			const invalidTaskData = {
+				name: "   ",
+				slug: "",
+				description: " ",
+				completed: false,
+				due_date: "2025-12-31T23:59:59.000Z",
+			};
+			const response = await SELF.fetch(`http://local.test/tasks`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(invalidTaskData),
+			});
+			const body = await response.json();
+
+			expect(response.status).toBe(400);
+			expect(body.success).toBe(false);
+			expect(body.errors).toBeInstanceOf(Array);
+		});
 	});
 
 	// Tests for GET /tasks/{id}
