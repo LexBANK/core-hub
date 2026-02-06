@@ -7,6 +7,9 @@ declare namespace Cloudflare {
 	}
 	interface Env {
 		DB: D1Database;
+		GITHUB_TOKEN: string;
+		GITHUB_AI_ENDPOINT: string;
+		GITHUB_AI_MODEL: string;
 	}
 }
 interface Env extends Cloudflare.Env {}
