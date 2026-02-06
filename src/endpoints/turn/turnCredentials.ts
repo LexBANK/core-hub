@@ -17,8 +17,8 @@ export class TurnCredentials extends OpenAPIRoute {
 						.min(60)
 						.max(86400)
 						.optional()
-						.default(86400)
-						.describe("Time to live in seconds (default: 86400)"),
+						.default(3600)
+						.describe("Time to live in seconds (default: 3600)"),
 				}),
 			),
 		},
@@ -46,6 +46,8 @@ export class TurnCredentials extends OpenAPIRoute {
 		const env = c.env;
 
 		const credentials = await generateTurnCredentials(env, data.body.ttl);
+
+		c.header("Cache-Control", "no-store");
 
 		return {
 			success: true,

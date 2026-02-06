@@ -3,12 +3,24 @@ export interface TurnEnv {
 	TURN_API_TOKEN: string;
 }
 
+export interface IceServer {
+	urls: string[];
+	username: string;
+	credential: string;
+}
+
 export interface TurnCredentials {
-	iceServers: {
-		urls: string[];
-		username: string;
-		credential: string;
-	}[];
+	iceServers: IceServer[];
+}
+
+/**
+ * Filter out port 53 URLs that cause browser timeouts.
+ */
+function filterPort53(iceServers: IceServer[]): IceServer[] {
+	return iceServers.map((server) => ({
+		...server,
+		urls: server.urls.filter((url) => !url.includes(":53")),
+	}));
 }
 
 export async function generateTurnCredentials(
@@ -16,7 +28,7 @@ export async function generateTurnCredentials(
 	ttl = 86400,
 ): Promise<TurnCredentials> {
 	const response = await fetch(
-		`https://rtc.live.cloudflare.com/v1/turn/keys/${env.TURN_TOKEN_ID}/credentials/generate`,
+		`https://rtc.live.cloudflare.com/v1/turn/keys/${env.TURN_TOKEN_ID}/credentials/generate-ice-servers`,
 		{
 			method: "POST",
 			headers: {
@@ -33,5 +45,8 @@ export async function generateTurnCredentials(
 		);
 	}
 
-	return response.json() as Promise<TurnCredentials>;
+	const data = (await response.json()) as TurnCredentials;
+	data.iceServers = filterPort53(data.iceServers);
+
+	return data;
 }
