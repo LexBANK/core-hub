@@ -1,0 +1,18 @@
+name: API Monitoring
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  status-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.corehub.nexus/)
+          if [ "$STATUS" -ge 400 ]; then
+            echo "API unhealthy: $STATUS"
+            exit 1
+          fi
