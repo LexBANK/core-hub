@@ -76,7 +76,10 @@ export class ChatCompletions extends OpenAPIRoute {
 			// Make the API call
 			const response = await client.path("/chat/completions").post({
 				body: {
-					messages: data.body.messages as any,
+					messages: data.body.messages.map((msg) => ({
+						role: msg.role,
+						content: msg.content,
+					})) as any,
 					temperature: data.body.temperature,
 					top_p: data.body.top_p,
 					max_tokens: data.body.max_tokens,
@@ -92,6 +95,21 @@ export class ChatCompletions extends OpenAPIRoute {
 						error: response.body.error
 							? JSON.stringify(response.body.error)
 							: "Unknown error occurred",
+					},
+					500,
+				);
+			}
+
+			// Validate response structure
+			if (
+				!response.body.choices ||
+				response.body.choices.length === 0 ||
+				!response.body.choices[0].message?.content
+			) {
+				return c.json(
+					{
+						success: false,
+						error: "Invalid response from AI service - no content returned",
 					},
 					500,
 				);
