@@ -27,17 +27,17 @@ Depending on where you sit in the ecosystem, MCP can have a range of benefits.
 
 ### Build servers
 Create MCP servers to expose your data and tools
-- Documentation: [/docs/develop/build-server](/docs/develop/build-server)
+- Documentation: https://modelcontextprotocol.io/docs/develop/build-server
 
 ### Build clients
 Develop applications that connect to MCP servers
-- Documentation: [/docs/develop/build-client](/docs/develop/build-client)
+- Documentation: https://modelcontextprotocol.io/docs/develop/build-client
 
 ## Learn more
 
 ### Understand concepts
 Learn the core concepts and architecture of MCP
-- Documentation: [/docs/learn/architecture](/docs/learn/architecture)
+- Documentation: https://modelcontextprotocol.io/docs/learn/architecture
 
 ## Documentation Index
 
