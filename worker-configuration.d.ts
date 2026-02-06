@@ -12,6 +12,7 @@ declare namespace Cloudflare {
 		GITHUB_AI_MODEL: string;
 		TURN_TOKEN_ID: string;
 		TURN_API_TOKEN: string;
+		COREHUB_ADMIN_KEY: string;
 	}
 }
 interface Env extends Cloudflare.Env {}
