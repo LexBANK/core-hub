@@ -70,3 +70,7 @@ Test files are located in the `tests/` directory, with examples demonstrating ho
 2. Each endpoint has its own file in `src/endpoints/`.
 3. Integration tests are located in the `tests/` directory.
 4. For more information read the [chanfana documentation](https://chanfana.com/), [Hono documentation](https://hono.dev/docs), and [Vitest documentation](https://vitest.dev/guide/).
+
+## Documentation
+
+Additional documentation is available in the [`docs/`](./docs) directory, including guides on GitHub Projects automation and workflows.
