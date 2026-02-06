@@ -70,3 +70,9 @@ Test files are located in the `tests/` directory, with examples demonstrating ho
 2. Each endpoint has its own file in `src/endpoints/`.
 3. Integration tests are located in the `tests/` directory.
 4. For more information read the [chanfana documentation](https://chanfana.com/), [Hono documentation](https://hono.dev/docs), and [Vitest documentation](https://vitest.dev/guide/).
+
+## Documentation
+
+Additional documentation can be found in the `docs/` directory:
+
+- [MCP Overview](docs/mcp-overview.md) - Learn about the Model Context Protocol (MCP) and how it enables AI applications to connect to external systems.
