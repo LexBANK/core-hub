@@ -2,6 +2,7 @@ import { ApiException, fromHono } from "chanfana";
 import { Hono } from "hono";
 import { tasksRouter } from "./endpoints/tasks/router";
 import { chatRouter } from "./endpoints/chat/router";
+import { turnRouter } from "./endpoints/turn/router";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
@@ -46,6 +47,9 @@ openapi.route("/tasks", tasksRouter);
 
 // Register Chat Sub router
 openapi.route("/chat", chatRouter);
+
+// Register TURN Sub router
+openapi.route("/turn", turnRouter);
 
 // Register other endpoints
 openapi.post("/dummy/:slug", DummyEndpoint);
