@@ -101,6 +101,22 @@ describe("Task API Integration Tests", () => {
 			expect(body.success).toBe(false);
 			expect(body.errors).toBeInstanceOf(Array);
 		});
+
+		it("should reject unsafe slug formats", async () => {
+			const response = await SELF.fetch(`http://local.test/tasks`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					name: "Bad Slug Task",
+					slug: "../admin",
+					description: "invalid slug input",
+					completed: false,
+					due_date: "2025-12-31T23:59:59.000Z",
+				}),
+			});
+
+			expect(response.status).toBe(400);
+		});
 	});
 
 	// Tests for GET /tasks/{id}
