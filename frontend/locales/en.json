@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "docs": "Docs",
+    "status": "Status",
+    "contact": "Contact",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "discussions": "Discussions"
+  },
+  "welcome": "Build and ship APIs faster with CoreHub"
+}

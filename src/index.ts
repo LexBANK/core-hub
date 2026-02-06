@@ -45,6 +45,7 @@ openapi.route("/tasks", tasksRouter);
 
 // Register other endpoints
 openapi.post("/dummy/:slug", DummyEndpoint);
+app.get("/health", (c) => c.json({ status: "ok" }));
 
 // Export the Hono app
 export default app;
