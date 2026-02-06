@@ -14,9 +14,15 @@ export const TaskModel = {
 	primaryKeys: ["id"],
 	schema: task,
 	serializer: (obj: Record<string, string | number | boolean>) => {
+		const completedValue = obj.completed;
+		const completed =
+			typeof completedValue === "boolean"
+				? completedValue
+				: completedValue === 1 || completedValue === "1";
+
 		return {
 			...obj,
-			completed: Boolean(obj.completed),
+			completed,
 		};
 	},
 	serializerObject: task,
