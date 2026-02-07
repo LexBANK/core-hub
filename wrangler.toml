@@ -1,0 +1,15 @@
+name = "corehub"
+main = "backend/worker.ts"
+compatibility_date = "2025-01-01"
+
+[vars]
+ENV = "production"
+
+[[d1_databases]]
+binding = "COREHUB_DB"
+database_name = "mycore_hub"
+database_id = "YOUR_D1_ID"
+
+[[kv_namespaces]]
+binding = "COREHUB_KV"
+id = "YOUR_KV_ID"
