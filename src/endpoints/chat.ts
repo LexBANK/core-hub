@@ -1,14 +1,44 @@
 import { Hono } from "hono";
 
+interface ProviderConfig {
+	apiUrl: string;
+	model: string;
+	apiKey: string;
+}
+
 const chatRouter = new Hono<{ Bindings: Env }>();
 
-chatRouter.post("/", async (c) => {
-	const apiKey = c.env.OPENAI_API_KEY;
-	if (!apiKey) {
-		return c.json({ error: "OPENAI_API_KEY is not configured" }, 500);
+function getProvider(
+	provider: string,
+	env: Env,
+): ProviderConfig | { error: string } {
+	switch (provider) {
+		case "openai":
+			if (!env.OPENAI_API_KEY)
+				return { error: "OPENAI_API_KEY is not configured" };
+			return {
+				apiUrl: "https://api.openai.com/v1/chat/completions",
+				model: "gpt-4o-mini",
+				apiKey: env.OPENAI_API_KEY,
+			};
+		case "perplexity":
+			if (!env.PERPLEXITY_API_KEY)
+				return { error: "PERPLEXITY_API_KEY is not configured" };
+			return {
+				apiUrl: "https://api.perplexity.ai/chat/completions",
+				model: "sonar",
+				apiKey: env.PERPLEXITY_API_KEY,
+			};
+		default:
+			return { error: `Unknown provider: ${provider}` };
 	}
+}
 
-	let body: { messages?: { role: string; content: string }[] };
+chatRouter.post("/", async (c) => {
+	let body: {
+		messages?: { role: string; content: string }[];
+		provider?: string;
+	};
 	try {
 		body = await c.req.json();
 	} catch {
@@ -20,41 +50,47 @@ chatRouter.post("/", async (c) => {
 		return c.json({ error: "messages array is required" }, 400);
 	}
 
-	// Validate message format
 	for (const msg of messages) {
 		if (!msg.role || !msg.content) {
-			return c.json({ error: "Each message must have role and content" }, 400);
+			return c.json(
+				{ error: "Each message must have role and content" },
+				400,
+			);
 		}
 	}
 
+	const providerName = body.provider || "openai";
+	const config = getProvider(providerName, c.env);
+
+	if ("error" in config) {
+		return c.json({ error: config.error }, 500);
+	}
+
 	try {
-		const response = await fetch(
-			"https://api.openai.com/v1/chat/completions",
-			{
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${apiKey}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					model: "gpt-4o-mini",
-					messages: [
-						{
-							role: "system",
-							content:
-								"You are a helpful assistant for LexBANK. Respond in the same language the user writes in. Be concise and helpful.",
-						},
-						...messages,
-					],
-					max_tokens: 2048,
-					temperature: 0.7,
-				}),
+		const response = await fetch(config.apiUrl, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${config.apiKey}`,
+				"Content-Type": "application/json",
 			},
-		);
+			body: JSON.stringify({
+				model: config.model,
+				messages: [
+					{
+						role: "system",
+						content:
+							"You are a helpful assistant for LexBANK. Respond in the same language the user writes in. Be concise and helpful.",
+					},
+					...messages,
+				],
+				max_tokens: 2048,
+				temperature: 0.7,
+			}),
+		});
 
 		if (!response.ok) {
 			const err = await response.json().catch(() => ({}));
-			console.error("OpenAI API error:", JSON.stringify(err));
+			console.error(`${providerName} API error:`, JSON.stringify(err));
 			return c.json(
 				{ error: "Failed to get response from AI model" },
 				502,

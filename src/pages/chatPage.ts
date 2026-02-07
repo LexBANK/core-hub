@@ -33,6 +33,12 @@ export function getChatHTML(): string {
     -webkit-text-fill-color: transparent;
   }
 
+  header .header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   header .status {
     font-size: 0.8rem;
     color: #4ade80;
@@ -48,6 +54,23 @@ export function getChatHTML(): string {
     background: #4ade80;
     border-radius: 50%;
     display: inline-block;
+  }
+
+  #provider-select {
+    background: #0f0f1a;
+    color: #e0e0e0;
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    direction: ltr;
+  }
+
+  #provider-select:focus {
+    border-color: #667eea;
   }
 
   #chat-container {
@@ -173,7 +196,13 @@ export function getChatHTML(): string {
 <body>
   <header>
     <h1>LexBANK Chat</h1>
-    <div class="status">متصل</div>
+    <div class="header-right">
+      <select id="provider-select">
+        <option value="openai">OpenAI (GPT-4o mini)</option>
+        <option value="perplexity">Perplexity (Sonar)</option>
+      </select>
+      <div class="status">متصل</div>
+    </div>
   </header>
 
   <div id="chat-container">
@@ -189,6 +218,7 @@ export function getChatHTML(): string {
     const chatContainer = document.getElementById('chat-container');
     const messageInput = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-btn');
+    const providerSelect = document.getElementById('provider-select');
 
     const conversationHistory = [];
 
@@ -247,7 +277,7 @@ export function getChatHTML(): string {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: conversationHistory }),
+          body: JSON.stringify({ messages: conversationHistory, provider: providerSelect.value }),
         });
 
         removeTypingIndicator();
