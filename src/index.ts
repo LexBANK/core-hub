@@ -1,8 +1,10 @@
 import { ApiException, fromHono } from "chanfana";
 import { Hono } from "hono";
 import { tasksRouter } from "./endpoints/tasks/router";
+import { chatRouter } from "./endpoints/chat";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { DummyEndpoint } from "./endpoints/dummyEndpoint";
+import { getChatHTML } from "./pages/chatPage";
 
 // Start a Hono app
 const app = new Hono<{ Bindings: Env }>();
@@ -45,6 +47,14 @@ openapi.route("/tasks", tasksRouter);
 
 // Register other endpoints
 openapi.post("/dummy/:slug", DummyEndpoint);
+
+// Chat web interface
+app.get("/chat", (c) => {
+	return c.html(getChatHTML());
+});
+
+// Chat API endpoint
+app.route("/api/chat", chatRouter);
 
 // Export the Hono app
 export default app;
